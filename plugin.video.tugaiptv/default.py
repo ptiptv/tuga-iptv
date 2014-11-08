@@ -299,7 +299,7 @@ def Ver_intro():
 	return True
 
 def Menu_inicial():
-    	intro = Ver_intro()
+    	#intro = Ver_intro()
     	try:
 	    abrir_cookie('http://82.199.155.116:8008/canais/liberar/')
 	    addDir("Tv","",1,"http://www.apkdad.com/wp-content/uploads/2013/02/Live-TV-for-Android-Icon.png")
