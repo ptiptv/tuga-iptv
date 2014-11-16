@@ -431,7 +431,7 @@ def play_filme(url):
         import json
         filme = eval(url)
         print filme['torrent']
-        subs = json.loads(abrir_cookie('http://127.0.0.1:8000/filme/subs/%s/' % filme['imdb']))
+        subs = json.loads(abrir_cookie('http://82.199.155.116:8008/filme/subs/%s/' % filme['imdb']))
 	try:
 	    sub_url = 'http://www.yifysubtitles.com' + subs['subs'][filme['imdb']]['brazilian-portuguese'][0]['url']
 	except:
@@ -495,7 +495,7 @@ def listar_categorias_filmes(url):
     pars = HTMLParser.HTMLParser()
     pars.unescape('&copy; &euro;')
     for categoria in categorias:
-	addDir(unescape(categoria.nome.text).encode('utf8'),'http://127.0.0.1:8000/vod/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,103,categoria.logo.text)
+	addDir(unescape(categoria.nome.text).encode('utf8'),'http://82.199.155.116:8008/vod/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,103,categoria.logo.text)
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
 def listar_filmes_vod(url):
@@ -513,9 +513,9 @@ def listar_categorias(url):
     for categoria in categorias:
 	#print categoria.nome
 	if categoria.nome.text == 'XXX':
-	    addDir(categoria.nome.text,'http://127.0.0.1:8000/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,104,categoria.logo.text)
+	    addDir(categoria.nome.text,'http://82.199.155.116:8008/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,104,categoria.logo.text)
 	else:
-	    addDir(categoria.nome.text,'http://127.0.0.1:8000/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,102,categoria.logo.text)
+	    addDir(categoria.nome.text,'http://82.199.155.116:8008/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,102,categoria.logo.text)
 
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
@@ -524,7 +524,7 @@ def listar_canais_xxx(url):
     keyb.doModal() #Espera ate que seja confirmada uma determinada string
     if (keyb.isConfirmed()):
             if keyb.getText() == '0000':
-		epg = eval(abrir_cookie('http://127.0.0.1:8000/canais/epg/'))
+		epg = eval(abrir_cookie('http://82.199.155.116:8008/canais/epg/'))
 		
 		soup = getSoup(url)
 		canais = soup('canal')
@@ -544,7 +544,7 @@ def listar_canais_xxx(url):
 #addDir(name,url,mode,iconimage,total=0,pasta=True)
 def listar_canais(url):
         
-        epg = eval(abrir_cookie('http://127.0.0.1:8000/canais/epg/'))
+        epg = eval(abrir_cookie('http://82.199.155.116:8008/canais/epg/'))
         
         soup = getSoup(url)
         canais = soup('canal')
@@ -649,7 +649,7 @@ elif mode==1001:
 elif mode==1002:
 	Menu_Inicial_Filmes()
 elif mode==1:
-        listar_categorias('http://127.0.0.1:8000/canais/xml?action=categorias')
+        listar_categorias('http://82.199.155.116:8008/canais/xml?action=categorias')
 elif mode==102:
         listar_canais(url)
 elif mode==103:
@@ -661,7 +661,7 @@ elif mode==105:
 elif mode==200:
         menu_filmes()
 elif mode==201:
-	listar_categorias_filmes('http://127.0.0.1:8000/vod/xml/?action=categorias')
+	listar_categorias_filmes('http://82.199.155.116:8008/vod/xml/?action=categorias')
 elif mode==2:
         listar_filmes(url)
 elif mode==3:
