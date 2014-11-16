@@ -431,7 +431,7 @@ def play_filme(url):
         import json
         filme = eval(url)
         print filme['torrent']
-        subs = json.loads(abrir_cookie('http://82.199.155.116:8008/filme/subs/%s/' % filme['imdb']))
+        subs = json.loads(abrir_cookie('http://127.0.0.1:8000/filme/subs/%s/' % filme['imdb']))
 	try:
 	    sub_url = 'http://www.yifysubtitles.com' + subs['subs'][filme['imdb']]['brazilian-portuguese'][0]['url']
 	except:
@@ -442,7 +442,7 @@ def play_filme(url):
 
         #thread.start_new_thread(set_sub, (sub_url,))
         xbmcPlayer = xbmc.Player()
-        xbmcPlayer.play('plugin://plugin.video.xbmctorrent/play/' + magnect)
+        xbmcPlayer.play('plugin://plugin.video.pulsar/play?uri=' + magnect)
 	
 
 def play_filme_vod(url,sub,server):
@@ -473,6 +473,19 @@ def play_filme_vod(url,sub,server):
 	    xbmcPlayer = xbmc.Player(xbmc.PLAYER_CORE_AUTO)
 	    xbmcPlayer.play(url)
 
+def play_mult_canal(arg):
+    try:
+	tuple_ = eval(arg)
+	playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+	playlist.clear()
+	for link in tuple_:
+	    listitem = xbmcgui.ListItem('Stream', thumbnailImage='')
+	    listitem.setInfo('video', {'Title': 'Stream'})
+	    playlist.add(url=link, listitem=listitem, index=7)
+	xbmc.Player(xbmc.PLAYER_CORE_AUTO).play(playlist)
+	
+    except:
+	xbmc.Player(xbmc.PLAYER_CORE_AUTO).play(arg)
 
 def listar_categorias_filmes(url):
     soup = getSoup(url)
@@ -482,7 +495,7 @@ def listar_categorias_filmes(url):
     pars = HTMLParser.HTMLParser()
     pars.unescape('&copy; &euro;')
     for categoria in categorias:
-	addDir(unescape(categoria.nome.text).encode('utf8'),'http://82.199.155.116:8008/vod/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,103,categoria.logo.text)
+	addDir(unescape(categoria.nome.text).encode('utf8'),'http://127.0.0.1:8000/vod/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,103,categoria.logo.text)
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
 def listar_filmes_vod(url):
@@ -498,12 +511,40 @@ def listar_categorias(url):
     soup = getSoup(url)
     categorias = soup('categoria')
     for categoria in categorias:
-	addDir(unescape(categoria.nome.text).encode('utf8'),'http://82.199.155.116:8008/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,102,categoria.logo.text)
+	#print categoria.nome
+	if categoria.nome.text == 'XXX':
+	    addDir(categoria.nome.text,'http://127.0.0.1:8000/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,104,categoria.logo.text)
+	else:
+	    addDir(categoria.nome.text,'http://127.0.0.1:8000/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,102,categoria.logo.text)
+
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
+def listar_canais_xxx(url):
+    keyb = xbmc.Keyboard('', 'XXX') #Chama o keyboard do XBMC com a frase indicada
+    keyb.doModal() #Espera ate que seja confirmada uma determinada string
+    if (keyb.isConfirmed()):
+            if keyb.getText() == '0000':
+		epg = eval(abrir_cookie('http://127.0.0.1:8000/canais/epg/'))
+		
+		soup = getSoup(url)
+		canais = soup('canal')
+		print epg
+		
+		for canal in canais:
+		    try:
+			      canal_programa = epg[canal.epg.text]['programa']
+		    except:
+			      canal_programa = ''
+		    if canal_programa:
+			      addDir(canal.nome.text + ' - [COLOR green](%s)[/COLOR]' % canal_programa ,canal.link.text,105,canal.logo.text,1,False)
+		    else:
+			      addDir(canal.nome.text,canal.link.text,105,canal.logo.text,1,False)
+    xbmc.executebuiltin("Container.SetViewMode(500)")
+
+#addDir(name,url,mode,iconimage,total=0,pasta=True)
 def listar_canais(url):
         
-        epg = eval(abrir_cookie('http://82.199.155.116:8008/canais/epg/'))
+        epg = eval(abrir_cookie('http://127.0.0.1:8000/canais/epg/'))
         
         soup = getSoup(url)
         canais = soup('canal')
@@ -515,9 +556,9 @@ def listar_canais(url):
               except:
                         canal_programa = ''
               if canal_programa:
-                        addLink(canal.nome.text + ' - [COLOR green](%s)[/COLOR]' % canal_programa ,canal.link.text,canal.logo.text)
+                        addDir(canal.nome.text.encode('utf8') + ' - [COLOR green](%s)[/COLOR]' % canal_programa ,canal.link.text,105,canal.logo.text,1,False)
               else:
-                        addLink(canal.nome.text,canal.link.text,canal.logo.text)
+                        addDir(canal.nome.text.encode('utf8'),canal.link.text,105,canal.logo.text,1,False)
         
         xbmc.executebuiltin("Container.SetViewMode(500)")
 
@@ -608,15 +649,19 @@ elif mode==1001:
 elif mode==1002:
 	Menu_Inicial_Filmes()
 elif mode==1:
-        listar_categorias('http://82.199.155.116:8008/canais/xml?action=categorias')
+        listar_categorias('http://127.0.0.1:8000/canais/xml?action=categorias')
 elif mode==102:
         listar_canais(url)
 elif mode==103:
 	listar_filmes_vod(url)
+elif mode==104:
+	listar_canais_xxx(url)
+elif mode==105:
+	play_mult_canal(url)
 elif mode==200:
         menu_filmes()
 elif mode==201:
-	listar_categorias_filmes('http://82.199.155.116:8008/vod/xml/?action=categorias')
+	listar_categorias_filmes('http://127.0.0.1:8000/vod/xml/?action=categorias')
 elif mode==2:
         listar_filmes(url)
 elif mode==3:
