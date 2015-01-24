@@ -219,7 +219,7 @@ def abrir_cookie(url):
         br.set_handle_robots(False)
         br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
         br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
-        br.open('http://37.252.126.160:8007/admin/')
+        br.open('http://89.163.212.78:8009/admin/')
         br.select_form(nr=0)
         br.form['password']=password
         br.form['username']=username
@@ -301,7 +301,7 @@ def Ver_intro():
 def Menu_inicial():
     	#intro = Ver_intro()
     	try:
-	    abrir_cookie('http://37.252.126.160:8007/canais/liberar/')
+	    abrir_cookie('http://89.163.212.78:8009/canais/liberar/')
 	    addDir("Tv","",1,"http://www.apkdad.com/wp-content/uploads/2013/02/Live-TV-for-Android-Icon.png")
 	    addDir("Filmes","1",1002,"http://icons.iconarchive.com/icons/hadezign/hobbies/256/Movies-icon.png")
 	    #addDir("Series","1",1003,"http://icons.iconarchive.com/icons/hadezign/hobbies/256/Movies-icon.png")
@@ -342,25 +342,25 @@ def canais_master():
 
 
 def canais_playtvfr():
-    canais = eval(abrir_cookie('http://37.252.126.160:8007/canais/playtvfr?action=1'))
+    canais = eval(abrir_cookie('http://89.163.212.78:8009/canais/playtvfr?action=1'))
     for canal in canais:
 	addDir(canal[0].encode('utf-8', 'ignore'),canal[2],'3001',canal[1],len(canais),False)
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
 def play_playtvfr(url):
-    m3u8 = abrir_cookie('http://37.252.126.160:8007/canais/playtvfr?action=2&ch=%s' % url)
+    m3u8 = abrir_cookie('http://89.163.212.78:8009/canais/playtvfr?action=2&ch=%s' % url)
     xbmcPlayer = xbmc.Player()
     xbmcPlayer.play(m3u8+'|User-agent=')
 
 
 def canais_tvzune():
-    canais = eval(abrir_cookie('http://37.252.126.160:8007/canais/tvzune?action=1'))
+    canais = eval(abrir_cookie('http://89.163.212.78:8009/canais/tvzune?action=1'))
     for canal in canais:
 	addDir(canal[0],canal[1],'2001',canal[2],len(canais),False)
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
 def play_tvzune(url):
-    m3u8 = abrir_cookie('http://37.252.126.160:8007/canais/tvzune?action=2&ch=%s' % url)
+    m3u8 = abrir_cookie('http://89.163.212.78:8009/canais/tvzune?action=2&ch=%s' % url)
     xbmcPlayer = xbmc.Player()
     xbmcPlayer.play(m3u8+'|User-agent=')
 
@@ -384,7 +384,7 @@ def listar_filmes(request):
         import json
         pagina = request.split('|')[1]
         request = request.split('|')[0]
-        filmes = json.loads(abrir_cookie('http://37.252.126.160:8007/filme/filmes?%s' % request))
+        filmes = json.loads(abrir_cookie('http://89.163.212.78:8009/filme/filmes?%s' % request))
         print filmes
         for filme in filmes['MovieList']:
                 meta_imdb = metagetpt.get_meta('movie', '', imdb_id=filme['imdb'])
@@ -431,7 +431,7 @@ def play_filme(url):
         import json
         filme = eval(url)
         print filme['torrent']
-        subs = json.loads(abrir_cookie('http://37.252.126.160:8007/filme/subs/%s/' % filme['imdb']))
+        subs = json.loads(abrir_cookie('http://89.163.212.78:8009/filme/subs/%s/' % filme['imdb']))
 	try:
 	    sub_url = 'http://www.yifysubtitles.com' + subs['subs'][filme['imdb']]['brazilian-portuguese'][0]['url']
 	except:
@@ -495,7 +495,7 @@ def listar_categorias_filmes(url):
     pars = HTMLParser.HTMLParser()
     pars.unescape('&copy; &euro;')
     for categoria in categorias:
-	addDir(unescape(categoria.nome.text).encode('utf8'),'http://37.252.126.160:8007/vod/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,103,categoria.logo.text)
+	addDir(unescape(categoria.nome.text).encode('utf8'),'http://89.163.212.78:8009/vod/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,103,categoria.logo.text)
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
 def listar_filmes_vod(url):
@@ -513,9 +513,9 @@ def listar_categorias(url):
     for categoria in categorias:
 	#print categoria.nome
 	if categoria.nome.text == 'XXX':
-	    addDir(categoria.nome.text,'http://37.252.126.160:8007/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,104,categoria.logo.text)
+	    addDir(categoria.nome.text,'http://89.163.212.78:8009/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,104,categoria.logo.text)
 	else:
-	    addDir(categoria.nome.text,'http://37.252.126.160:8007/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,102,categoria.logo.text)
+	    addDir(categoria.nome.text,'http://89.163.212.78:8009/canais/xml/?action=categoria&categoria_pk=%s' % categoria.pk.text,102,categoria.logo.text)
 
     xbmc.executebuiltin("Container.SetViewMode(500)")
 
@@ -524,7 +524,7 @@ def listar_canais_xxx(url):
     keyb.doModal() #Espera ate que seja confirmada uma determinada string
     if (keyb.isConfirmed()):
             if keyb.getText() == '0000':
-		epg = eval(abrir_cookie('http://37.252.126.160:8007/canais/epg/'))
+		epg = eval(abrir_cookie('http://89.163.212.78:8009/canais/epg/'))
 		
 		soup = getSoup(url)
 		canais = soup('canal')
@@ -544,7 +544,7 @@ def listar_canais_xxx(url):
 #addDir(name,url,mode,iconimage,total=0,pasta=True)
 def listar_canais(url):
         
-        epg = eval(abrir_cookie('http://37.252.126.160:8007/canais/epg/'))
+        epg = eval(abrir_cookie('http://89.163.212.78:8009/canais/epg/'))
         
         soup = getSoup(url)
         canais = soup('canal')
@@ -649,7 +649,7 @@ elif mode==1001:
 elif mode==1002:
 	Menu_Inicial_Filmes()
 elif mode==1:
-        listar_categorias('http://37.252.126.160:8007/canais/xml?action=categorias')
+        listar_categorias('http://89.163.212.78:8009/canais/xml?action=categorias')
 elif mode==102:
         listar_canais(url)
 elif mode==103:
@@ -661,7 +661,7 @@ elif mode==105:
 elif mode==200:
         menu_filmes()
 elif mode==201:
-	listar_categorias_filmes('http://37.252.126.160:8007/vod/xml/?action=categorias')
+	listar_categorias_filmes('http://89.163.212.78:8009/vod/xml/?action=categorias')
 elif mode==2:
         listar_filmes(url)
 elif mode==3:
